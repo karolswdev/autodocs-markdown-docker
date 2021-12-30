@@ -1,0 +1,27 @@
+﻿name: Continous Build
+
+on:
+  push:
+    branches:
+      - '*/**'
+      - '*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: 🛠 Build Docker image
+        run: docker build -t "karolswdev/autodocs-markdown-docker:latest" .
+        shell: bash
+      - name: ⚙ Test
+        run: bash ./test.sh
+        shell: bash
+        working-directory: ./tests
+      - name: 📮 Docker Artifactory log-in
+        run: echo ${{ secrets.DOCKERHUB_APIKEY }} | docker login -u karolswdev --password-stdin
+        shell: bash
+        if: github.ref == 'refs/heads/main'
+      - name: Push image to Docker Hub
+        run: docker push karolswdev/autodocs-markdown-docker
+        if: github.ref == 'refs/heads/main'
