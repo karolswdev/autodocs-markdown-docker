@@ -17,7 +17,7 @@ jobs:
       - name: ⚙ Test
         run: chmod u+x test.sh && ./test.sh
         shell: bash
-        working-directory: ./test
+        working-directory: ./tests
       - name: 📮 Docker Artifactory log-in
         run: echo ${{ secrets.DOCKERHUB_APIKEY }} | docker login -u karolswdev --password-stdin
         shell: bash
